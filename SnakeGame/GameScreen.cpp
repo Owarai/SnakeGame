@@ -80,8 +80,10 @@ void GameScreen::paintEvent(QPaintEvent * event) {
 	QColor darkWhite(250, 250, 250);
 	QColor pink(255, 192, 203);
 	QColor brown(97, 25, 11);
-	QColor rainbow(r, g, b);
-	QColor neg_rainbow(255 - r, 255 - g, 255 - b);
+	//Dark rainbow.
+	QColor rainbow(255 - r, 255 - g, 255 - b);
+	//Light rainbow.
+	QColor neg_rainbow(r, g, b);
 
 	//Fill entire window
 	QPainter painter(this);
