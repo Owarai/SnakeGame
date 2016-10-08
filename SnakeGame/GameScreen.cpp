@@ -8,6 +8,7 @@
 GameScreen::GameScreen(QWidget *parent)
 	: QWidget(parent)
 {
+	//Window init.
 	ui.setupUi(this);
 	this->setMinimumSize(801, 601);
 	this->setMaximumSize(801, 601);
@@ -15,8 +16,10 @@ GameScreen::GameScreen(QWidget *parent)
 
 	mode = MODE_MENU;
 
+	//Data init.
 	init();
 
+	//Timer init.
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(onTimer()));
 	//timer->start(50);
@@ -34,7 +37,7 @@ GameScreen::~GameScreen()
 
 void GameScreen::paintEvent(QPaintEvent * event) {
 
-
+	//Rainbow maker.
 	if (r >= 255) {
 		r_dir = RANGE_DOWN;
 		g_dir = RANGE_UP;
@@ -72,6 +75,7 @@ void GameScreen::paintEvent(QPaintEvent * event) {
 		b -= 5;
 	}
 
+	//Some colors.
 	QColor white(255, 255, 255);
 	QColor darkWhite(250, 250, 250);
 	QColor pink(255, 192, 203);
@@ -79,8 +83,10 @@ void GameScreen::paintEvent(QPaintEvent * event) {
 	QColor rainbow(r, g, b);
 	QColor neg_rainbow(255 - r, 255 - g, 255 - b);
 
+	//Fill entire window
 	QPainter painter(this);
 	painter.fillRect(0, 0, width(), height(), darkWhite);
+	//Default pen color.
 	painter.setPen(QPen(Qt::black, 1));
 
 	if (mode == MODE_MENU) {
@@ -131,6 +137,8 @@ void GameScreen::paintEvent(QPaintEvent * event) {
 void GameScreen::keyPressEvent(QKeyEvent* event) {
 	if (mode == MODE_RUNNING) {
 		if (event->key() == Qt::Key_Space) {
+			//To pause or unpause.
+
 			if (pause == false) {
 				pause = true;
 				timer->stop();
@@ -143,6 +151,8 @@ void GameScreen::keyPressEvent(QKeyEvent* event) {
 				spam_last = clock();
 			}
 		}
+
+		//Reassign direction to key.
 		else if (event->key() == Qt::Key_Up) {
 			if (prev_dir != 3 && pause == false) {
 				dir = 1;
@@ -167,9 +177,11 @@ void GameScreen::keyPressEvent(QKeyEvent* event) {
 	}
 
 	else if (mode == MODE_MENU) {
+		//Start when space is pressed.
 		if (event->key() == Qt::Key_Space) {
 			mode = MODE_RUNNING;
 
+			//Data init.
 			init();
 
 			timer->start(50);
@@ -177,9 +189,11 @@ void GameScreen::keyPressEvent(QKeyEvent* event) {
 	}
 
 	else if (mode == MODE_GAMEOVER) {
+		//Start when space is pressed.
 		if (event->key() == Qt::Key_Space) {
 			mode = MODE_RUNNING;
 
+			//Data init.
 			init();
 
 			timer->start(50);
@@ -201,6 +215,9 @@ void GameScreen::onTimer() {
 	spam_last = now;
 	}
 	*/
+	
+
+	//Make one more fruit and coffee after 5000 miliseconds.
 	if ((double)(now - respawn_last) > 5000) {
 		x_rand = rand() % 80;
 		y_rand = rand() % 60;
@@ -210,6 +227,12 @@ void GameScreen::onTimer() {
 		coffee_loc.push_back(std::make_pair(x_rand, y_rand));
 		respawn_last = now;
 	}
+
+	/*
+	Update body locations.
+	Depends on body speed (amt of coffee), time elapsed, and direction.
+	If over the edge, will transport back to other side.
+	*/
 	if ((double)(now - lastTime) > 1000.0 / (9 + coffee)) {
 		// move
 
@@ -241,6 +264,7 @@ void GameScreen::onTimer() {
 			y = 60 - 1;
 		}
 
+		//Check if head ate the body.
 		for (int i = 0; i < body.size(); i++) {
 			if (body[i].first == x && body[i].second == y) {
 				timer->stop();
@@ -249,6 +273,7 @@ void GameScreen::onTimer() {
 			}
 		}
 
+		//Check if head ate a fruit.
 		for (int i = 0; i < fruit_loc.size(); i++) {
 			if (fruit_loc[i].first == x && fruit_loc[i].second == y) {
 				fruit++;
@@ -256,6 +281,7 @@ void GameScreen::onTimer() {
 			}
 		}
 
+		//Check if head ate a coffee.
 		for (int i = 0; i < coffee_loc.size(); i++) {
 			if (coffee_loc[i].first == x && coffee_loc[i].second == y) {
 				coffee++;
@@ -263,17 +289,19 @@ void GameScreen::onTimer() {
 			}
 		}
 
-
-
+		//Adds the new head location.
 		body.push_back(std::make_pair(x, y));
 
+		//Deletes the old tail location.
 		if (body.size() >= size_max + fruit) {
 			body.erase(body.begin());
 		}
 
+		//Update time.
 		lastTime = now;
 		prev_dir = dir;
 
+		//Update display.
 		update();
 	}
 }
@@ -309,6 +337,7 @@ void GameScreen::init() {
 	fruit_loc.clear();
 	coffee_loc.clear();
 
+	//Defines location of fruits and coffee randomly.
 	for (int i = 0; i < 50; i++) {
 		x_rand = rand() % 80;
 		y_rand = rand() % 60;

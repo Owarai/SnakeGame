@@ -13,6 +13,7 @@ class GameScreen : public QWidget
 	Q_OBJECT
 
 public:
+	//Enumerators to improve readability.
 	static enum { MODE_MENU = 0, MODE_RUNNING, MODE_GAMEOVER };
 	static enum { RANGE_DOWN = 0, RANGE_IDLE, RANGE_UP };
 
@@ -24,7 +25,7 @@ public:
 	void keyReleaseEvent(QKeyEvent* pEvent);
 	void init();
 
-	public slots:
+public slots:
 	void onTimer();
 
 protected:
@@ -32,6 +33,9 @@ protected:
 
 private:
 	Ui::GameScreen ui;
+
+
+	//Declare variables.
 
 	int x_rand;
 	int y_rand;
@@ -56,10 +60,12 @@ private:
 
 	int mode;
 
+	//Vectors of body, fruit, and coffee locations.
 	std::vector<std::pair<int, int> > body;
 	std::vector<std::pair<int, int> > fruit_loc;
 	std::vector<std::pair<int, int> > coffee_loc;
 
+	//Timer
 	QTimer* timer;
 	time_t lastTime;
 	time_t respawn_last;
