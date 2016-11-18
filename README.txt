@@ -11,6 +11,7 @@ Todo:
  - Score
  - Record
  - Night Mode
+ - Beautification of source
 
 Video:
 	https://www.youtube.com/watch?v=_2H8211uUPs
